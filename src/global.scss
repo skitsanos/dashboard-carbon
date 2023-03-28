@@ -1,0 +1,59 @@
+@use '@carbon/react';
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+#root {
+  flex: 1;
+
+  > div {
+	//height: 100%;
+	display: flex;
+  }
+}
+
+main {
+  height: 100%;
+  width: 100%;
+}
+
+.login-form {
+  width: 40ch;
+}
+
+.debug {
+  background-color: rgba(127, 0, 0, 0.1);
+}
+
+.h-box {
+  display: flex;
+  justify-content: center;
+}
+
+.w100 {
+  width: 100%;
+}
+
+.cds--link {
+  cursor: pointer;
+}
