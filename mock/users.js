@@ -11,8 +11,11 @@ const generateUser = function* ()
 };
 
 export default {
-    'GET /api/users': {
-        result: [
+    'GET /api/users': (req, res) =>
+    {
+        const {page, pageSize, q} = req.query;
+
+        const generatedUsers = [
             {
                 key: 'user-skitsanos',
                 name: 'Evgenios Skitsanos',
@@ -20,7 +23,11 @@ export default {
                 uuiid: chance().guid()
             },
             ...Array.from({length: 10}, () => generateUser().next().value)
-        ],
-        total: 100
+        ];
+
+        res.status(200).json({
+            result: q ? generatedUsers.filter(user => user.name.toLowerCase().includes(q.toLowerCase())) : generatedUsers,
+            total: 100
+        });
     }
 };

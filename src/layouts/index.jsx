@@ -1,3 +1,4 @@
+import {useSession} from '@/entities';
 import {Notification, Search, Switcher} from '@carbon/icons-react';
 
 import {
@@ -11,23 +12,36 @@ import {
     HeaderNavigation,
     Theme
 } from '@carbon/react';
-import {useToggle} from 'ahooks';
+import {useEffect, useState} from 'react';
 
 import {history, Outlet} from 'umi';
 
+const publicRoutes = ['/login', '/register'];
+
 export default () =>
 {
-    const [isLoggedIn, {toggle}] = useToggle(false);
+    const [isLoggedIn] = useState(false);
+    const [, {login, logout}] = useSession('session');
+
+    const allowed = publicRoutes.includes(location.pathname);
+
+    useEffect(() =>
+    {
+        if (!isLoggedIn && !allowed)
+        {
+            history.push('/login');
+        }
+    }, [allowed, isLoggedIn]);
 
     return <Theme theme={'white'}>
-        <Header aria-label="Demo App Dashboard">
-            <HeaderName href="#"
-                        prefix="DEMO">
+        <Header aria-label={'Demo App Dashboard'}>
+            <HeaderName href={'/'}
+                        prefix={'DEMO'}>
                 [App]
             </HeaderName>
 
             {isLoggedIn && <HeaderNavigation aria-label="Demo [App]">
-                <HeaderMenuItem href="#">Link 1</HeaderMenuItem>
+                <HeaderMenuItem href="/users">Users</HeaderMenuItem>
                 <HeaderMenuItem href="#">Link 2</HeaderMenuItem>
                 <HeaderMenuItem href="#">Link 3</HeaderMenuItem>
                 <HeaderMenu aria-label="Link 4"
@@ -54,7 +68,6 @@ export default () =>
                 <HeaderGlobalAction aria-label="App Switcher"
                                     onClick={() =>
                                     {
-
                                         if (isLoggedIn)
                                         {
                                             history.push('/');
@@ -64,7 +77,6 @@ export default () =>
                                             history.push('/login');
                                         }
 
-                                        toggle();
                                     }}>
                     <Switcher/>
                 </HeaderGlobalAction>
@@ -75,7 +87,7 @@ export default () =>
             <Outlet/>
 
             <div>
-                isLoggedIn: {isLoggedIn.toString()}
+                isLoggedIn: {isLoggedIn}
             </div>
         </Content>
     </Theme>;
