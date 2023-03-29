@@ -1,7 +1,3 @@
-import {session} from '@/entities/session';
-import {track} from '@/entities/track';
+//https://github.com/pmndrs/zustand
 
-import {makeEntity} from 'react-entities';
-
-export const useSession = makeEntity(session);
-export const useTracker = makeEntity(track);
+//export useSession = create((set, get) => ({

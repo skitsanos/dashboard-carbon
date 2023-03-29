@@ -7,8 +7,7 @@ export const session = {
                 isLoggedIn: false
             },
 
-    logout: s => () =>
-    {
+    logout: s => () => {
         const {setState} = s;
 
         localStorage.clear();
@@ -19,8 +18,7 @@ export const session = {
         });
     },
 
-    login: s => payload =>
-    {
+    login: s => payload => {
         const {setState} = s;
 
         const {ttl = 1} = payload;
@@ -31,4 +29,4 @@ export const session = {
 
         localStorage.setItem('session', JSON.stringify(payload));
     }
-};
+}
