@@ -28,36 +28,4 @@ const useSession = create((set, get) => ({
     }
 }));
 
-const useSession2 = create(set => ({
-    session:
-        localStorage.getItem('session') !== null
-            ? JSON.parse(localStorage.getItem('session'))
-            : {
-                user: {},
-                isLoggedIn: false
-            },
-
-    login: payload =>
-    {
-        const {ttl = 1} = payload;
-        console.log(payload);
-
-        console.log('Session expires on', new Date((new Date().getTime() + ttl * 60000)));
-
-        set(payload, true);
-
-        localStorage.setItem('session', JSON.stringify(payload));
-    },
-
-    logout: () =>
-    {
-        localStorage.clear();
-
-        set({
-            isLoggedIn: false,
-            user: {}
-        });
-    }
-}));
-
 export default useSession;
