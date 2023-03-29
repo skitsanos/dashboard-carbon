@@ -1,3 +1,4 @@
+import useSession from '@/hooks/useSession';
 import {Notification, Search, Switcher} from '@carbon/icons-react';
 
 import {
@@ -11,80 +12,91 @@ import {
     HeaderNavigation,
     Theme
 } from '@carbon/react';
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 
 import {history, Outlet} from 'umi';
-import {EntityScope, useEntity} from 'react-entities';
-import * as session from '@/entities/session';
 
 const publicRoutes = ['/login', '/register'];
 
-export default () => {
-    const [isLoggedIn] = useState(false);
+export default () =>
+{
+    const {session, login, logout} = useSession();
 
-
+    console.log(session);
 
     const allowed = publicRoutes.includes(location.pathname);
 
-    useEffect(() => {
-        if (!isLoggedIn && !allowed) {
+    useEffect(() =>
+    {
+        if (!session && !allowed)
+        {
             history.push('/login');
         }
-    }, [allowed, isLoggedIn]);
+    }, [allowed, session]);
 
     return <Theme theme={'white'}>
-        <EntityScope entities={{session}}>
-            <Header aria-label={'Demo App Dashboard'}>
-                <HeaderName href={'/'}
-                            prefix={'DEMO'}>
-                    [App]
-                </HeaderName>
+        <Header aria-label={'Demo App Dashboard'}>
+            <HeaderName href={'/'}
+                        prefix={'DEMO'}>
+                [App]
+            </HeaderName>
 
-                {isLoggedIn && <HeaderNavigation aria-label="Demo [App]">
-                    <HeaderMenuItem href="/users">Users</HeaderMenuItem>
-                    <HeaderMenuItem href="#">Link 2</HeaderMenuItem>
-                    <HeaderMenuItem href="#">Link 3</HeaderMenuItem>
-                    <HeaderMenu aria-label="Link 4"
-                                menuLinkName="Link 4">
-                        <HeaderMenuItem href="#">Sub-link 1</HeaderMenuItem>
-                        <HeaderMenuItem href="#">Sub-link 2</HeaderMenuItem>
-                        <HeaderMenuItem href="#">Sub-link 3</HeaderMenuItem>
-                    </HeaderMenu>
-                </HeaderNavigation>}
+            {session && <HeaderNavigation aria-label="Demo [App]">
+                <HeaderMenuItem href="/users">Users</HeaderMenuItem>
+                <HeaderMenuItem href="#">Link 2</HeaderMenuItem>
+                <HeaderMenuItem href="#">Link 3</HeaderMenuItem>
+                <HeaderMenu aria-label="Link 4"
+                            menuLinkName="Link 4">
+                    <HeaderMenuItem href="#">Sub-link 1</HeaderMenuItem>
+                    <HeaderMenuItem href="#">Sub-link 2</HeaderMenuItem>
+                    <HeaderMenuItem href="#">Sub-link 3</HeaderMenuItem>
+                </HeaderMenu>
+            </HeaderNavigation>}
 
-                <HeaderGlobalBar>
-                    <HeaderGlobalAction aria-label="Search"
-                                        onClick={() => {
-                                        }}>
-                        <Search/>
-                    </HeaderGlobalAction>
-                    <HeaderGlobalAction aria-label="Notifications"
-                                        onClick={() => {
-                                        }}>
-                        <Notification/>
-                    </HeaderGlobalAction>
-                    <HeaderGlobalAction aria-label="App Switcher"
-                                        onClick={() => {
-                                            if (isLoggedIn) {
-                                                history.push('/');
-                                            } else {
-                                                history.push('/login');
-                                            }
+            <HeaderGlobalBar>
+                <HeaderGlobalAction aria-label="Search"
+                                    onClick={() =>
+                                    {
+                                    }}>
+                    <Search/>
+                </HeaderGlobalAction>
+                <HeaderGlobalAction aria-label="Notifications"
+                                    onClick={() =>
+                                    {
+                                    }}>
+                    <Notification/>
+                </HeaderGlobalAction>
+                <HeaderGlobalAction aria-label="App Switcher"
+                                    onClick={() =>
+                                    {
+                                        if (session)
+                                        {
+                                            logout();
 
-                                        }}>
-                        <Switcher/>
-                    </HeaderGlobalAction>
-                </HeaderGlobalBar>
-            </Header>
+                                            history.push('/login');
+                                        }
+                                        else
+                                        {
+                                            login({
+                                                user: {
+                                                    name: 'Demo User'
+                                                }
+                                            });
 
-            <Content>
-                <Outlet/>
+                                            history.push('/');
+                                        }
+                                    }}>
+                    <Switcher/>
+                </HeaderGlobalAction>
+            </HeaderGlobalBar>
+        </Header>
 
-                <div>
-                    isLoggedIn: {isLoggedIn}
-                </div>
-            </Content>
-        </EntityScope>
+        <Content>
+            <Outlet/>
 
+            <div>
+                session: {JSON.stringify(session)}
+            </div>
+        </Content>
     </Theme>;
-}
+};
