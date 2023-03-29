@@ -2,7 +2,7 @@ import {create} from 'zustand';
 
 const SESSION_STORAGE_KEY = 'session';
 
-const useSession = create((set, get) => ({
+const useSession = create((set) => ({
     session: localStorage.getItem(SESSION_STORAGE_KEY) !== null
         ? JSON.parse(localStorage.getItem(SESSION_STORAGE_KEY))
         : null,
@@ -12,6 +12,7 @@ const useSession = create((set, get) => ({
         set({session: newSession});
         localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(newSession));
     },
+
     logout: () =>
     {
         set({session: null});
