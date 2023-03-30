@@ -1,3 +1,4 @@
+import useSession from '@/hooks/useSession';
 import {Button, Link, Stack, TextInput, Tile} from '@carbon/react';
 import {useSetState} from 'ahooks';
 import Form, {Field} from 'rc-field-form';
@@ -12,6 +13,8 @@ const Input = ({value = '', ...props}) =>
 
 export default () =>
 {
+    const {session, login, logout} = useSession();
+
     const [form] = Form.useForm();
 
     const [validForm, setValidForm] = useSetState({

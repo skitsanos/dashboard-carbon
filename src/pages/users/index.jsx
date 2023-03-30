@@ -1,8 +1,11 @@
-import {apiGet, endpoints} from '@/api';
+import {endpoints} from '@/api';
+import {paginationProps} from '@/defaults';
+import getTableData from '@/utils/getTableData';
 import {Renew} from '@carbon/icons-react';
 import {
     Button,
     DataTableSkeleton,
+    Pagination,
     Stack,
     Table,
     TableBody,
@@ -16,7 +19,7 @@ import {
     TableToolbarSearch,
     Tile
 } from '@carbon/react';
-import {useRequest} from 'ahooks';
+import {usePagination} from 'ahooks';
 
 const headers = ['Name', 'Email', 'Device ID', 'Actions'];
 
@@ -24,7 +27,22 @@ const headers = ['Name', 'Email', 'Device ID', 'Actions'];
 
 export default () =>
 {
-    const {data, loading, run} = useRequest(q => apiGet(q ? `${endpoints.users}?q=${q}` : `${endpoints.users}`));
+    //const {data, loading, run} = useRequest(q => apiGet(q ? `${endpoints.users}?q=${q}` : `${endpoints.users}`));
+
+    const {data, run, loading, pagination, refresh} = usePagination(({
+                                                                         current,
+                                                                         pageSize,
+                                                                         sorter,
+                                                                         query
+                                                                     }) => getTableData(endpoints.users, {
+        current,
+        pageSize,
+        sorter,
+        query,
+        filter: ''
+    }), {
+        defaultPageSize: 10
+    });
 
     return <Stack gap={4}>
         <h1>Users</h1>
@@ -45,7 +63,10 @@ export default () =>
                                                     const {value} = e.target;
                                                     if (value && value.length >= 3)
                                                     {
-                                                        run(value);
+                                                        run({
+                                                            ...pagination,
+                                                            query: value
+                                                        });
                                                     }
                                                 }
                                             }}/>
@@ -53,7 +74,7 @@ export default () =>
                                 hasIconOnly={true}
                                 kind={'ghost'}
                                 iconDescription={'Reload'}
-                                onClick={() => run()}/>
+                                onClick={() => run(pagination)}/>
                         <Button kind={'primary'}
                                 size={'sm'}>Add new</Button>
                     </TableToolbarContent>
@@ -73,7 +94,7 @@ export default () =>
                     </TableHead>
 
                     <TableBody>
-                        {data && data.result.map((row) => (
+                        {data && data.data.map((row) => (
                             <TableRow key={row.key}>
                                 {Object.keys(row)
                                        .filter((key) => key !== 'key')
@@ -87,6 +108,14 @@ export default () =>
                     </TableBody>
                 </Table>
             </TableContainer>}
+
+            <Pagination {...paginationProps}
+                        totalItems={pagination.total}
+                        page={pagination.current}
+                        onChange={({page, pageSize}) =>
+                        {
+                            pagination.onChange(page, pageSize);
+                        }}/>
 
         </Tile>
     </Stack>;

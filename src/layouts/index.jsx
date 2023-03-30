@@ -93,10 +93,6 @@ export default () =>
 
         <Content>
             <Outlet/>
-
-            <div>
-                session: {JSON.stringify(session)}
-            </div>
         </Content>
     </Theme>;
 };

@@ -9,13 +9,20 @@ const useSession = create((set) => ({
 
     login: (newSession) =>
     {
-        set({session: newSession});
+        set({
+            session: {
+                ...newSession,
+                createdOn: new Date().getTime()
+            }
+        });
         localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(newSession));
     },
 
     logout: () =>
     {
-        set({session: null});
+        set({
+            session: null
+        });
         localStorage.removeItem(SESSION_STORAGE_KEY);
     },
 
