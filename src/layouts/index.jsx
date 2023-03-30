@@ -9,8 +9,7 @@ import {
     HeaderMenu,
     HeaderMenuItem,
     HeaderName,
-    HeaderNavigation,
-    Theme
+    HeaderNavigation
 } from '@carbon/react';
 import {useEffect} from 'react';
 
@@ -34,7 +33,7 @@ export default () =>
         }
     }, [allowed, session]);
 
-    return <Theme theme={'white'}>
+    return <>
         <Header aria-label={'Demo App Dashboard'}>
             <HeaderName href={'/'}
                         prefix={'DEMO'}>
@@ -94,5 +93,5 @@ export default () =>
         <Content>
             <Outlet/>
         </Content>
-    </Theme>;
+    </>;
 };

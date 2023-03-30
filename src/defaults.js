@@ -12,5 +12,5 @@ export const paginationProps = {
 export const columnProps = {
     sm: 16,
     md: 8,
-    lg: 3
+    lg: 4
 };

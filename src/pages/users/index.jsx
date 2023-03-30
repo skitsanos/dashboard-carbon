@@ -1,12 +1,16 @@
 import {endpoints} from '@/api';
+import Stats from '@/components/Stats';
 import {columnProps, paginationProps} from '@/defaults';
 import getTableData from '@/utils/getTableData';
 import {Renew} from '@carbon/icons-react';
 import {
+    Breadcrumb,
+    BreadcrumbItem,
     Button,
     Column,
     DataTableSkeleton,
     Grid,
+    Link,
     Pagination,
     Stack,
     Table,
@@ -46,119 +50,109 @@ export default () =>
         defaultPageSize: 10
     });
 
-    return <Stack gap={4}>
-        <h1>Users</h1>
+    return <>
+        <Breadcrumb noTrailingSlash>
+            <BreadcrumbItem href="#">Breadcrumb 1</BreadcrumbItem>
+            <BreadcrumbItem href="#">Breadcrumb 2</BreadcrumbItem>
+            <BreadcrumbItem href="#">Breadcrumb 3</BreadcrumbItem>
+        </Breadcrumb>
 
-        <Grid className={'debug'}
-              fullWidth={true}
-              columns={3}>
-            <Column {...columnProps} className={'debug'}>
-                <Stack>
-                    <div>
-                        Users
-                    </div>
+        <Stack gap={4}
+               className={'mt'}>
+            <h1>Users</h1>
 
-                    <h3>
-                        {data && data.total}
-                    </h3>
-                </Stack>
-            </Column>
+            <Grid fullWidth={true}>
+                <Column {...columnProps}>
+                    <Stats label={'Total Users'}
+                           value={data?.total || ''}/>
+                </Column>
+                <Column {...columnProps}>
+                    <Stats label={'Active Users'}
+                           value={data?.total - 16 || ''}/>
+                </Column>
+                <Column {...columnProps}>
+                    <Stats label={'Disabled Users'}
+                           value={data?.total - 85 || ''}/>
+                </Column>
+                <Column {...columnProps}>
+                    <Stats label={'New signups'}
+                           value={0}>
+                        <Link href={'#'}>View all</Link>
+                    </Stats>
+                </Column>
+            </Grid>
 
-            <Column {...columnProps} className={'debug'}>
-                <Stack>
-                    <div>
-                        Active
-                    </div>
+            <Tile>
+                {loading && <DataTableSkeleton headers={headers}/>}
 
-                    <h3>
-                        {data && data.total}
-                    </h3>
-                </Stack>
-            </Column>
-
-            <Column {...columnProps} className={'debug'}>
-                <Stack>
-                    <div>
-                        Disabled
-                    </div>
-
-                    <h3>
-                        0
-                    </h3>
-                </Stack>
-            </Column>
-        </Grid>
-
-        <Tile>
-            {loading && <DataTableSkeleton headers={headers}/>}
-
-            {!loading && <TableContainer>
-                <TableToolbar>
-                    <TableToolbarContent>
-                        <TableToolbarSearch placeholder={'Type to search'}
-                                            persistent={true}
-                                            onKeyUp={e =>
-                                            {
-                                                //check if enter key
-                                                if (e.keyCode === 13)
+                {!loading && <TableContainer>
+                    <TableToolbar>
+                        <TableToolbarContent>
+                            <TableToolbarSearch placeholder={'Type to search'}
+                                                persistent={true}
+                                                onKeyUp={e =>
                                                 {
-                                                    const {value} = e.target;
-                                                    if (value && value.length >= 3)
+                                                    //check if enter key
+                                                    if (e.keyCode === 13)
                                                     {
-                                                        run({
-                                                            ...pagination,
-                                                            query: value
-                                                        });
+                                                        const {value} = e.target;
+                                                        if (value && value.length >= 3)
+                                                        {
+                                                            run({
+                                                                ...pagination,
+                                                                query: value
+                                                            });
+                                                        }
                                                     }
-                                                }
-                                            }}/>
-                        <Button renderIcon={Renew}
-                                hasIconOnly={true}
-                                kind={'ghost'}
-                                iconDescription={'Reload'}
-                                onClick={() => run(pagination)}/>
-                        <Button kind={'primary'}
-                                size={'sm'}>Add new</Button>
-                    </TableToolbarContent>
-                </TableToolbar>
+                                                }}/>
+                            <Button renderIcon={Renew}
+                                    hasIconOnly={true}
+                                    kind={'ghost'}
+                                    iconDescription={'Reload'}
+                                    onClick={() => run(pagination)}/>
+                            <Button kind={'primary'}
+                                    size={'sm'}>Add new</Button>
+                        </TableToolbarContent>
+                    </TableToolbar>
 
-                <Table size={'lg'}>
-                    <TableHead>
-                        <TableRow>
-                            {headers.map((header) => (
-                                <TableHeader id={header.key}
-                                             scope={'col'}
-                                             key={header}>
-                                    {header}
-                                </TableHeader>
-                            ))}
-                        </TableRow>
-                    </TableHead>
-
-                    <TableBody>
-                        {data && data.data.map((row) => (
-                            <TableRow key={row.key}>
-                                {Object.keys(row)
-                                       .filter((key) => key !== 'key')
-                                       .map((key) =>
-                                       {
-                                           return <TableCell key={key}>{row[key]}</TableCell>;
-                                       })}
-                                <TableCell key={'actions'}>[none]</TableCell>
+                    <Table size={'lg'}>
+                        <TableHead>
+                            <TableRow>
+                                {headers.map((header) => (
+                                    <TableHeader id={header.key}
+                                                 scope={'col'}
+                                                 key={header}>
+                                        {header}
+                                    </TableHeader>
+                                ))}
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>}
+                        </TableHead>
 
-            <Pagination {...paginationProps}
-                        totalItems={pagination.total}
-                        page={pagination.current}
-                        onChange={({page, pageSize}) =>
-                        {
-                            pagination.onChange(page, pageSize);
-                        }}/>
+                        <TableBody>
+                            {data && data.data.map((row) => (
+                                <TableRow key={row.key}>
+                                    {Object.keys(row)
+                                           .filter((key) => key !== 'key')
+                                           .map((key) =>
+                                           {
+                                               return <TableCell key={key}>{row[key]}</TableCell>;
+                                           })}
+                                    <TableCell key={'actions'}>[none]</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>}
 
-        </Tile>
-    </Stack>;
+                <Pagination {...paginationProps}
+                            totalItems={pagination.total}
+                            page={pagination.current}
+                            onChange={({page, pageSize}) =>
+                            {
+                                pagination.onChange(page, pageSize);
+                            }}/>
+
+            </Tile>
+        </Stack>
+    </>;
 };
