@@ -1,10 +1,12 @@
 import {endpoints} from '@/api';
-import {paginationProps} from '@/defaults';
+import {columnProps, paginationProps} from '@/defaults';
 import getTableData from '@/utils/getTableData';
 import {Renew} from '@carbon/icons-react';
 import {
     Button,
+    Column,
     DataTableSkeleton,
+    Grid,
     Pagination,
     Stack,
     Table,
@@ -46,6 +48,46 @@ export default () =>
 
     return <Stack gap={4}>
         <h1>Users</h1>
+
+        <Grid className={'debug'}
+              fullWidth={true}
+              columns={3}>
+            <Column {...columnProps} className={'debug'}>
+                <Stack>
+                    <div>
+                        Users
+                    </div>
+
+                    <h3>
+                        {data && data.total}
+                    </h3>
+                </Stack>
+            </Column>
+
+            <Column {...columnProps} className={'debug'}>
+                <Stack>
+                    <div>
+                        Active
+                    </div>
+
+                    <h3>
+                        {data && data.total}
+                    </h3>
+                </Stack>
+            </Column>
+
+            <Column {...columnProps} className={'debug'}>
+                <Stack>
+                    <div>
+                        Disabled
+                    </div>
+
+                    <h3>
+                        0
+                    </h3>
+                </Stack>
+            </Column>
+        </Grid>
 
         <Tile>
             {loading && <DataTableSkeleton headers={headers}/>}

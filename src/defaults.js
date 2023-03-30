@@ -8,3 +8,9 @@ export const paginationProps = {
         50
     ]
 };
+
+export const columnProps = {
+    sm: 16,
+    md: 8,
+    lg: 3
+};
